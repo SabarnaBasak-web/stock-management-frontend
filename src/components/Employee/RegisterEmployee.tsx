@@ -1,4 +1,3 @@
-import React from "react";
 import { useDispatch } from "react-redux";
 
 import {
@@ -57,7 +56,6 @@ function RegisterEmployee(props: IRegisterEmployeeProps) {
       empId: Yup.string().required("Required"),
     }),
     onSubmit: (values) => {
-      console.log("values", values);
       if (updateEmployee) {
         dispatch(
           updateEmployeeAction({
@@ -78,14 +76,7 @@ function RegisterEmployee(props: IRegisterEmployeeProps) {
     },
     enableReinitialize: true,
   });
-  const {
-    errors,
-    values,
-    handleChange,
-    handleSubmit,
-    // setSubmitting,
-    resetForm,
-  } = formik;
+  const { errors, values, handleChange, handleSubmit, resetForm } = formik;
   return (
     <>
       <form onSubmit={handleSubmit}>

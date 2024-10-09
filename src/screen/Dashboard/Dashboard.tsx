@@ -3,18 +3,20 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useCallback, useEffect, useState } from "react";
 // components
-import NavbarComponent from "../../components/NavbarComponent";
-// stores constants and helpers
-import { getLoggedInUserDetails } from "../../redux/employee/employeeSlice";
-import { decodeToken, isTokenExpired } from "../../helper/helper";
-import { RootState } from "../../redux/store";
-import DrawerComponent from "../../components/Drawer";
 import { Box, Grid } from "@mui/material";
+import NavbarComponent from "../../components/NavbarComponent";
+import DrawerComponent from "../../components/Drawer";
 import HomeScreen from "./DashboardScreens/Home";
 import CpuScreen from "./DashboardScreens/Cpu";
 import EmployeeScreen from "./DashboardScreens/Employee";
 import ReportScreen from "./DashboardScreens/Report";
 import AssignProduct from "./DashboardScreens/AssignProduct";
+import UpsScreen from "./DashboardScreens/UpsScreen";
+import VendorScreen from "./DashboardScreens/VendorScreen";
+// stores constants and helpers
+import { getLoggedInUserDetails } from "../../redux/employee/employeeSlice";
+import { decodeToken, isTokenExpired } from "../../helper/helper";
+import { RootState } from "../../redux/store";
 
 function DashboardScreen() {
   const routeComponent: Record<
@@ -40,6 +42,14 @@ function DashboardScreen() {
     "/report": {
       title: "Report",
       component: <ReportScreen />,
+    },
+    "/ups": {
+      title: "Ups",
+      component: <UpsScreen />,
+    },
+    "/vendor": {
+      title: "Vendors",
+      component: <VendorScreen />,
     },
   };
 

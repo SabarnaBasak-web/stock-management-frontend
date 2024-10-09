@@ -11,21 +11,23 @@ function HomeScreen() {
   const editIpHandler = (ip: IIpDetails) => {
     setUpdateIp(ip);
   };
+
+  const cancelUpdate = () => {
+    setUpdateIp(null);
+  };
   return (
-    <>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          gap: "10px",
-          justifyContent: "flex-start",
-          alignItems: "flex-start",
-        }}
-      >
-        <RegisterIp updateIp={updateIp} />
-        <IpList editIpHandler={editIpHandler} />
-      </Box>
-    </>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "row",
+        gap: "10px",
+        justifyContent: "flex-start",
+        alignItems: "flex-start",
+      }}
+    >
+      <RegisterIp updateIp={updateIp} cancelUpdate={cancelUpdate} />
+      <IpList editIpHandler={editIpHandler} />
+    </Box>
   );
 }
 
