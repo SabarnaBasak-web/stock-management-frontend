@@ -19,29 +19,40 @@ import { getEmployeeDetailsById } from "../../../services/employeeService";
 import { IIpDetails } from "../../../redux/ip/ipSlice";
 import { IEmployeeDetails } from "../../../redux/employee/employeeSlice";
 import { getUnusedIps } from "../../../services/ipService";
+import ProductScreen from "./ProductScreen";
+import { useDispatch, useSelector } from "react-redux";
+import { getProductsList } from "../../../redux/product/productSlice";
+import { RootState } from "../../../redux/store";
 
 function AssignProduct() {
+  const dispatch = useDispatch();
+  const allProducts = useSelector(
+    (state: RootState) => state.product.productsList
+  );
   const [searchEmployee, setSearchEmployee] = useState("");
   const [empDetails, setEmpDetails] = useState<IEmployeeDetails>();
   const [selectedIp, setSelectedIp] = useState("");
+  const [selectedProductType, setSelectedProductType] = useState("");
   const [ipList, setIpList] = useState<IIpDetails[]>([]);
-  console.log("search ", searchEmployee);
 
   const searchEmployeeByIdHandler = async () => {
     const employeeDetails = await getEmployeeDetailsById(searchEmployee);
     if (employeeDetails.id) {
       const ipList = await getUnusedIps();
-      console.log("ipList", ipList);
       setIpList([...ipList]);
     }
-    console.log(employeeDetails);
     setEmpDetails(employeeDetails);
+
+    if (employeeDetails.active) {
+      dispatch(getProductsList());
+    }
   };
 
-  console.log("ipList", ipList);
   const selectIpHandler = (event: SelectChangeEvent<string>) => {
-    console.log("event", event);
     setSelectedIp(event.target.value);
+  };
+  const selectedProductHandler = (event: SelectChangeEvent<string>) => {
+    setSelectedProductType(event.target.value);
   };
   return (
     <Grid container p={2} spacing={2}>
@@ -102,7 +113,14 @@ function AssignProduct() {
           </Card>
         )}
         {empDetails?.active && (
-          <Box sx={{ marginTop: "20px" }}>
+          <Box
+            sx={{
+              marginTop: "20px",
+              display: "flex",
+              flexDirection: "column",
+              rowGap: 2,
+            }}
+          >
             <FormControl style={{ width: "50%" }}>
               <InputLabel id='select-ip-label'>Select Ip </InputLabel>
               <Select
@@ -119,7 +137,31 @@ function AssignProduct() {
                 )}
                 {ipList &&
                   ipList.map((ip) => {
-                    return <MenuItem value={ip.id}>{ip.ipNumber}</MenuItem>;
+                    return (
+                      <MenuItem key={ip.id} value={ip.id}>
+                        {ip.ipNumber}
+                      </MenuItem>
+                    );
+                  })}
+              </Select>
+            </FormControl>
+            {/* Product select dropdown */}
+            <FormControl style={{ width: "50%" }}>
+              <InputLabel id='select-product-label'>Select Product </InputLabel>
+              <Select
+                labelId='select-product-label'
+                id='select-product'
+                value={selectedProductType}
+                label='Select Product'
+                onChange={selectedProductHandler}
+              >
+                {allProducts &&
+                  allProducts.map((product) => {
+                    return (
+                      <MenuItem key={product.id} value={product.id}>
+                        {product.name}
+                      </MenuItem>
+                    );
                   })}
               </Select>
             </FormControl>
@@ -129,6 +171,7 @@ function AssignProduct() {
       {/* End of left Container */}
       <Grid item md={6}>
         <h4>Second column</h4>
+        <ProductScreen />
       </Grid>
     </Grid>
   );

@@ -126,7 +126,6 @@ export const employeeSlice = createSlice({
       const rest = state.registeredEmployees.filter(
         (x) => x.id !== action.payload.id
       );
-      console.log("rest", rest);
       state.registeredEmployees = [...rest, action.payload];
     },
   },

@@ -30,26 +30,22 @@ const StyledCardContent = styled(CardContent)(() => ({
 }));
 
 interface IRegisterIpProps {
+  cancelUpdate: () => void;
   updateIp: IIpDetails | null;
 }
 
 function RegisterIp(props: IRegisterIpProps) {
-  const { updateIp } = props;
+  const { cancelUpdate, updateIp } = props;
 
   const dispatch = useDispatch();
 
+  const registerIpInitialValue = {
+    ipNumber: "",
+    active: true,
+    inUse: false,
+  };
   const formik = useFormik({
-    initialValues: updateIp
-      ? {
-          ipNumber: updateIp.ipNumber,
-          active: updateIp.active,
-          inUse: updateIp.inUse,
-        }
-      : {
-          ipNumber: "",
-          active: true,
-          inUse: false,
-        },
+    initialValues: updateIp ? updateIp : registerIpInitialValue,
     validationSchema: Yup.object({
       ipNumber: Yup.string().required("Required"),
     }),
@@ -112,6 +108,21 @@ function RegisterIp(props: IRegisterIpProps) {
             <Button variant='contained' type='submit'>
               {!updateIp ? "Register" : "Update"}
             </Button>
+            {updateIp ? (
+              <Button variant='outlined' type='reset' onClick={cancelUpdate}>
+                Cancel
+              </Button>
+            ) : (
+              <Button
+                variant='outlined'
+                type='reset'
+                onClick={() =>
+                  resetForm({ values: { ...registerIpInitialValue } })
+                }
+              >
+                Reset
+              </Button>
+            )}
           </CardActions>
         </Card>
       </form>
