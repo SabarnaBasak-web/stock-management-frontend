@@ -8,11 +8,14 @@ import {
   IVendorsListResponse,
   setRowCount,
   setVendorList,
+  updateVendor,
+  updateVendorDetails,
 } from "./vendorSlice";
 import { PayloadAction } from "@reduxjs/toolkit";
 import {
   addNewVendorService,
   getAllVendors,
+  updateVendorDetailsService,
 } from "../../services/vendorService";
 
 function* registerVendor(action: PayloadAction<IVendor>) {
@@ -26,7 +29,6 @@ function* registerVendor(action: PayloadAction<IVendor>) {
       take: 2,
       cursor: 0,
     });
-    console.log("@@ res", res);
     yield put(setVendorList(res.data));
     yield put(setRowCount(res.total));
   }
@@ -39,10 +41,17 @@ function* fetchAllVendors(action: PayloadAction<IVendorListQueryString>) {
   yield put(setVendorList(response.data));
   yield put(setRowCount(response.total));
 }
+
+function* updateExistingVendorDetails(action: PayloadAction<IVendorResponse>) {
+  const response: IVendorResponse = yield call(
+    updateVendorDetailsService,
+    action.payload
+  );
+  yield put(updateVendor(response));
+}
 function* vendorSaga() {
   yield takeLatest(addNewVendor, registerVendor);
   yield takeLatest(getVendorsList, fetchAllVendors);
-  // yield takeLatest(getIps, fetchAllIps);
-  // yield takeLatest(updateIpDetails, updateExistingIp);
+  yield takeLatest(updateVendorDetails, updateExistingVendorDetails);
 }
 export default vendorSaga;

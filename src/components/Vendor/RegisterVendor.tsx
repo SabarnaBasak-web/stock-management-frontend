@@ -14,6 +14,7 @@ import {
   addNewVendor,
   IVendor,
   IVendorResponse,
+  updateVendorDetails,
 } from "../../redux/vendor/vendorSlice";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
@@ -52,9 +53,9 @@ function RegisterVendor(props: IRegisterVendorProps) {
     }),
     onSubmit: (values: IVendor) => {
       setSubmitting(true);
-      console.log("@@ values", values);
+
       if (updateVendor) {
-        // dispatch(updateIpDetails({ id: updateIp.id, ...values }));
+        dispatch(updateVendorDetails({ id: updateVendor.id, ...values }));
       } else {
         const payload = { ...values, mobile: values.mobile.toString() };
         dispatch(addNewVendor(payload));
@@ -75,7 +76,6 @@ function RegisterVendor(props: IRegisterVendorProps) {
     resetForm,
   } = formik;
 
-  // console.log("@@ errors", errors);
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <form onSubmit={handleSubmit}>
@@ -131,7 +131,7 @@ function RegisterVendor(props: IRegisterVendorProps) {
             style={{ justifyContent: "flex-end", marginBottom: "2px" }}
           >
             <Button variant='contained' type='submit'>
-              Register
+              {!updateVendor ? "Register" : "Update"}
             </Button>
             {updateVendor ? (
               <Button variant='outlined' type='reset' onClick={cancelUpdate}>
