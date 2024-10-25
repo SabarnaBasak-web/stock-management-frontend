@@ -2,10 +2,11 @@ import { GridPaginationModel } from "@mui/x-data-grid";
 import { useState } from "react";
 import { IIpDetails } from "../redux/ip/ipSlice";
 import { IEmployeeDetails } from "../redux/employee/employeeSlice";
+import { IVendorResponse } from "../redux/vendor/vendorSlice";
 
 interface IPaginationProp {
   paginationModel: GridPaginationModel;
-  data: IIpDetails[] | IEmployeeDetails[];
+  data: IIpDetails[] | IEmployeeDetails[] | IVendorResponse[];
 }
 const usePagination = (props: IPaginationProp) => {
   const { paginationModel, data } = props;

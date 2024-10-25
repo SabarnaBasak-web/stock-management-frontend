@@ -1,22 +1,24 @@
 // react
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useCallback, useEffect, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 // components
-import { Box, Grid } from "@mui/material";
+import { Box, CircularProgress, Grid } from "@mui/material";
 import NavbarComponent from "../../components/NavbarComponent";
 import DrawerComponent from "../../components/Drawer";
-import HomeScreen from "./DashboardScreens/Home";
-import CpuScreen from "./DashboardScreens/Cpu";
-import EmployeeScreen from "./DashboardScreens/Employee";
-import ReportScreen from "./DashboardScreens/Report";
-import AssignProduct from "./DashboardScreens/AssignProduct";
-import UpsScreen from "./DashboardScreens/UpsScreen";
-import VendorScreen from "./DashboardScreens/VendorScreen";
+
 // stores constants and helpers
 import { getLoggedInUserDetails } from "../../redux/employee/employeeSlice";
 import { decodeToken, isTokenExpired } from "../../helper/helper";
 import { RootState } from "../../redux/store";
+
+const HomeScreen = lazy(() => import("./DashboardScreens/Home"));
+const CpuScreen = lazy(() => import("./DashboardScreens/Cpu"));
+const EmployeeScreen = lazy(() => import("./DashboardScreens/Employee"));
+const ReportScreen = lazy(() => import("./DashboardScreens/Report"));
+const AssignProduct = lazy(() => import("./DashboardScreens/AssignProduct"));
+const UpsScreen = lazy(() => import("./DashboardScreens/UpsScreen"));
+const VendorScreen = lazy(() => import("./DashboardScreens/VendorScreen"));
 
 function DashboardScreen() {
   const routeComponent: Record<
@@ -105,9 +107,11 @@ function DashboardScreen() {
             }
           />
           <Box sx={{ p: "0.8rem", mt: "64px" }}>
-            {selectedRoute
-              ? routeComponent[selectedRoute].component
-              : routeComponent[routes[0]].component}
+            <Suspense fallback={<CircularProgress />}>
+              {selectedRoute
+                ? routeComponent[selectedRoute].component
+                : routeComponent[routes[0]].component}
+            </Suspense>
           </Box>
         </Grid>
       </Grid>

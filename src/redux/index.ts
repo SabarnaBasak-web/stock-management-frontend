@@ -8,6 +8,8 @@ import { ipSlice } from "./ip/ipSlice";
 import ipSaga from "./ip/ipSaga";
 import { productSlice } from "./product/productSlice";
 import productSaga from "./product/productSaga";
+import { vendorSlice } from "./vendor/vendorSlice";
+import vendorSaga from "./vendor/vendorSaga";
 
 export function* rootSaga() {
   yield all([
@@ -15,11 +17,13 @@ export function* rootSaga() {
     fork(employeeSaga),
     fork(ipSaga),
     fork(productSaga),
+    fork(vendorSaga),
   ]);
 }
 export const rootReducer = combineSlices(
   authenticationSlice,
   employeeSlice,
   ipSlice,
-  productSlice
+  productSlice,
+  vendorSlice
 );
