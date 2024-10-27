@@ -61,11 +61,8 @@ export default function VendorTable(props: IVendorTableProps) {
       getActions: (params) => [
         <GridActionsCellItem
           icon={<EditIcon />}
-          label='Edit Ip'
-          onClick={() => {
-            console.log("@@ param", params.row);
-            editVendorHandler(params.row);
-          }}
+          label='Edit Vendor'
+          onClick={() => editVendorHandler(params.row)}
         />,
       ],
     },

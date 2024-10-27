@@ -1,5 +1,3 @@
-import { ILoggedInUserDetails } from "../redux/employee/employeeSlice";
-import { IIpListQueryString } from "../redux/ip/ipSlice";
 import {
   IVendor,
   IVendorListQueryString,
@@ -36,6 +34,20 @@ export async function getAllVendors(
   const { take, cursor } = payload;
   const result = await fetch(`${url}?take=${take}&cursor=${cursor}`, {
     ...baseInitialization,
+  });
+  const response = await result.json();
+
+  return response;
+}
+
+export async function updateVendorDetailsService(
+  payload: IVendorResponse
+): Promise<IVendorResponse> {
+  const baseInitialization = createBaseInitialization("PUT");
+  const { id } = payload;
+  const result = await fetch(`${url}/${id}`, {
+    ...baseInitialization,
+    body: JSON.stringify(payload),
   });
   const response = await result.json();
 

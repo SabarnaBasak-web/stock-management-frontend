@@ -6,7 +6,6 @@ import { useState } from "react";
 
 function HomeScreen() {
   const [updateIp, setUpdateIp] = useState<IIpDetails | null>(null);
-  // const [selectedIp, setSelectedIp] = useState(-1);
 
   const editIpHandler = (ip: IIpDetails) => {
     setUpdateIp(ip);

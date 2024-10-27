@@ -30,7 +30,8 @@ const initialState: IVendorState = {
 export const addNewVendor = createAction<IVendor>("addNewVendor");
 export const getVendorsList =
   createAction<IVendorListQueryString>("getVendorsList");
-
+export const updateVendorDetails =
+  createAction<IVendorResponse>("updateVendor");
 export const vendorSlice = createSlice({
   name: "vendor",
   initialState,
@@ -41,7 +42,13 @@ export const vendorSlice = createSlice({
     setRowCount: (state, action: PayloadAction<number>) => {
       state.totalCount = action.payload;
     },
+    updateVendor: (state, action: PayloadAction<IVendorResponse>) => {
+      const updatedList = state.vendorsList.map((x) =>
+        x.id === action.payload.id ? action.payload : x
+      );
+      state.vendorsList = updatedList;
+    },
   },
 });
-export const { setVendorList, setRowCount } = vendorSlice.actions;
+export const { setVendorList, setRowCount, updateVendor } = vendorSlice.actions;
 export default vendorSlice.reducer;
