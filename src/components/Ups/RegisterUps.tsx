@@ -10,6 +10,11 @@ import {
   FormLabel,
   Select,
   MenuItem,
+  FormControl,
+  InputLabel,
+  SelectChangeEvent,
+  CardActions,
+  Button,
 } from "@mui/material";
 
 import { useFormik } from "formik";
@@ -20,6 +25,19 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import CustomTextarea from "../CustomTextArea/CustomTextarea";
+import { RootState } from "../../redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getVendorsList,
+  IVendorResponse,
+} from "../../redux/vendor/vendorSlice";
+import {
+  IUpdateUpsRequestPayload,
+  IUpsRequestPayload,
+  IUpsResponse,
+  registerUps,
+  updateUpsDetailsAction,
+} from "../../redux/ups/upsSlice";
 
 const StyledCardContent = styled(CardContent)(() => ({
   display: "flex",
@@ -29,63 +47,145 @@ const StyledCardContent = styled(CardContent)(() => ({
   boxSizing: "border-box",
 }));
 
-function RegisterUps() {
-  const [problemSelected, setProblemSelected] = useState("no");
+interface IRegisterProps {
+  updateUpsDetails: IUpsResponse | null;
+  cancelUpdate: () => void;
+}
+
+interface IRegisterUpsInitialValues {
+  problemSelected: boolean;
+  warrentySelected: boolean;
+  gemNo: string;
+  brandName: string;
+  serialNo: string;
+  modelNo: string;
+  problem: string;
+  warrentyStartDate: Dayjs | null;
+  warrentyEndDate: Dayjs | null;
+  isAmc: boolean;
+  vendorId: number;
+  eWaste?: boolean;
+  defunct?: boolean;
+}
+function RegisterUps(props: IRegisterProps) {
+  const { updateUpsDetails, cancelUpdate } = props;
   const [gemDate, setGemDate] = useState<Dayjs | null>(dayjs(Date.now()));
-  const handleProblemSelectedChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setProblemSelected(event.target.value);
-  };
-  const registerUpsInitialValue = {
+
+  const { vendorsList } = useSelector((state: RootState) => state.vendor);
+
+  const dispatch = useDispatch();
+
+  const registerUpsInitialValue: IRegisterUpsInitialValues = {
     gemNo: "",
     brandName: "",
     serialNo: "",
     modelNo: "",
     problem: "",
-    warrentyStartDate: "",
-    warrentyEndDate: "",
+    problemSelected: false,
+    warrentyStartDate: null,
+    warrentyEndDate: null,
     defunct: false,
     isAmc: false,
-    deliveryDate: "",
-    vendorId: "",
+    vendorId: 0,
+    warrentySelected: false,
+    eWaste: false,
   };
-  const formik = useFormik({
-    initialValues: registerUpsInitialValue,
+
+  const selectedUpsDetails = (updateUpsDetails: IUpsResponse) => {
+    console.log("@@ SelectedUps", updateUpsDetails);
+    return {
+      gemNo: updateUpsDetails.gemNo.toString(),
+      brandName: updateUpsDetails.brandName,
+      serialNo: updateUpsDetails.serialNo,
+      modelNo: updateUpsDetails.modelNo,
+      problemSelected: !!updateUpsDetails.problem,
+      problem: updateUpsDetails.problem ? updateUpsDetails.problem : "",
+      warrentySelected:
+        !!updateUpsDetails.warrentyStartDate &&
+        !!updateUpsDetails.warrentyEndDate,
+      warrentyStartDate: dayjs(new Date(updateUpsDetails.warrentyStartDate)),
+      warrentyEndDate: dayjs(new Date(updateUpsDetails.warrentyEndDate)),
+      defunct: updateUpsDetails.defunct,
+      isAmc: updateUpsDetails.isAmc,
+      vendorId: updateUpsDetails.vendorId,
+      eWaster: updateUpsDetails.eWaste,
+    };
+  };
+
+  const formik = useFormik<IRegisterUpsInitialValues>({
+    initialValues: updateUpsDetails
+      ? selectedUpsDetails(updateUpsDetails)
+      : registerUpsInitialValue,
     validationSchema: Yup.object({
       gemNo: Yup.string().required("Required"),
       brandName: Yup.string().required("Required"),
       serialNo: Yup.string().required("Required"),
       modelNo: Yup.string().required("Required"),
       vendorId: Yup.string().required("Required"),
-      deliveryDate: Yup.string().required("Required"),
     }),
     onSubmit: (values) => {
-      console.log(values);
+      const requestPayload: IUpsRequestPayload = {
+        gemNo: +values.gemNo,
+        gemDate: gemDate?.toISOString() ?? "",
+        problem: values.problem ?? "",
+        brandName: values.brandName,
+        serialNo: values.serialNo,
+        modelNo: values.modelNo,
+        warrentyStartDate: values.warrentyStartDate
+          ? values.warrentyStartDate.toISOString()
+          : null,
+        warrentyEndDate: values.warrentyEndDate
+          ? values.warrentyEndDate.toISOString()
+          : null,
+        isAmc: false,
+        vendorId: values.vendorId,
+        eWaste: values.eWaste,
+        defunct: values.defunct,
+      };
+      if (updateUpsDetails) {
+        dispatch(
+          updateUpsDetailsAction({
+            ...requestPayload,
+            id: updateUpsDetails.id,
+          } as IUpdateUpsRequestPayload)
+        );
+      } else {
+        dispatch(registerUps(requestPayload));
+      }
+      resetForm({ values: { ...registerUpsInitialValue } });
     },
     enableReinitialize: true,
   });
-  const { errors, values, handleChange, handleSubmit, resetForm } = formik;
+  const {
+    errors,
+    values,
+    handleChange,
+    handleSubmit,
+    resetForm,
+    setFieldValue,
+  } = formik;
 
-  const getVendorList = async () => {};
+  const handleSelectVendorChange = (event: SelectChangeEvent) => {
+    setFieldValue("vendorId", event.target.value);
+  };
+
   useEffect(() => {
-    getVendorList();
-  });
+    dispatch(getVendorsList());
+  }, [dispatch]);
 
   return (
     <>
       <form onSubmit={handleSubmit}>
         <Card sx={{ width: "350px" }}>
           <CardHeader
-            // title={updateEmployee ? "Update Employee" : "Register Employee"}
-            title={"Register Ups"}
+            title={updateUpsDetails ? "Update Ups" : "Register Ups"}
           />
           <StyledCardContent>
             <TextField
               id='gemNo'
               variant='filled'
               name='gemNo'
-              type='text'
+              type='number'
               label='Gem No'
               onChange={handleChange}
               value={values.gemNo}
@@ -131,50 +231,69 @@ function RegisterUps() {
               id='modelNo'
               variant='filled'
               name='modelNo'
-              type='number'
               label='Model Number'
               onChange={handleChange}
               value={values.modelNo}
             />
             {errors.modelNo ? <ErrorText text={errors.modelNo ?? ""} /> : null}
             {/* Vendor */}
-            <Select defaultValue={10} id='vendorId' name='vendorId'>
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
-            </Select>
-            {errors.modelNo ? <ErrorText text={errors.modelNo ?? ""} /> : null}
+            {vendorsList.length && (
+              <FormControl required>
+                <InputLabel id='select-vendor'>Select Vendor</InputLabel>
+                <Select
+                  label-id='select-vendor'
+                  placeholder='Select Vendor'
+                  name='vendorId'
+                  id='vendor-select'
+                  label='Select Vendor'
+                  value={values.vendorId.toString()}
+                  onChange={handleSelectVendorChange}
+                >
+                  {vendorsList.map((item: IVendorResponse) => {
+                    return (
+                      <MenuItem key={item.id} value={item.id ?? ""}>
+                        {item.name}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            )}
+            {errors.vendorId ? (
+              <ErrorText text={errors.vendorId ?? ""} />
+            ) : null}
             {/* Problem */}
             <FormLabel>Problem</FormLabel>
             <RadioGroup
               row
               aria-labelledby='demo-form-control-label-placement'
-              name='Problem'
-              value={problemSelected}
-              onChange={(event) => {
-                console.log("event", event.target.value);
-                setProblemSelected(event.target.value);
-              }}
+              name='problemSelected'
+              value={values.problemSelected}
+              onChange={(event) =>
+                setFieldValue("problemSelected", event?.target.value)
+              }
             >
               <FormControlLabel
-                value={"no"}
+                value={false}
                 control={<Radio />}
                 label='No'
                 labelPlacement='start'
               />
               <FormControlLabel
-                value={"yes"}
+                value={true}
                 control={<Radio />}
                 label='Yes'
                 labelPlacement='start'
               />
             </RadioGroup>
-            {problemSelected === "yes" && (
+            {values.problemSelected && (
               <>
                 <CustomTextarea
                   ariaLabel='Problem'
                   minRows={3}
                   name='problem'
+                  value={values.problem}
+                  onChange={(e) => setFieldValue("problem", e.target.value)}
                   placeholderText='State the problem...'
                 />
                 {errors.problem ? (
@@ -182,25 +301,68 @@ function RegisterUps() {
                 ) : null}
               </>
             )}
-            {/* employee id
-            <TextField
-              id='empId'
-              variant='filled'
-              name='empId'
-              type='text'
-              label='Employee Id'
-              onChange={handleChange}
-              value={values.empId}
-            />
-            {errors.empId ? <ErrorText text={errors.empId ?? ""} /> : null} */}
+            {/* Warrenty Selected */}
+            <FormLabel>Warrenty</FormLabel>
+            <RadioGroup
+              row
+              aria-labelledby='demo-form-control-label-placement'
+              name='warrentySelected'
+              value={values.warrentySelected}
+              onChange={(e) =>
+                setFieldValue("warrentySelected", e.target.value)
+              }
+            >
+              <FormControlLabel
+                value={false}
+                control={<Radio />}
+                label='No'
+                labelPlacement='start'
+              />
+              <FormControlLabel
+                value={true}
+                control={<Radio />}
+                label='Yes'
+                labelPlacement='start'
+              />
+            </RadioGroup>
+            {values.warrentySelected && (
+              <>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    label='Warrent Start Date'
+                    name='warrentyStartDate'
+                    value={values.warrentyStartDate}
+                    onChange={(newValue: Dayjs | null) =>
+                      setFieldValue("warrentyStartDate", newValue)
+                    }
+                  />
+                </LocalizationProvider>
+                {errors.warrentyStartDate ? (
+                  <ErrorText text={errors.warrentyStartDate ?? ""} />
+                ) : null}
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    label='Warrenty End Date'
+                    name='warrentyEndDate'
+                    value={values.warrentyEndDate}
+                    onChange={(newValue: Dayjs | null) =>
+                      setFieldValue("warrentyEndDate", newValue)
+                    }
+                  />
+                </LocalizationProvider>
+                {errors.warrentyEndDate ? (
+                  <ErrorText text={errors.warrentyEndDate ?? ""} />
+                ) : null}
+              </>
+            )}
           </StyledCardContent>
-          {/* <CardActions
+          <CardActions
             style={{ justifyContent: "flex-end", marginBottom: "2px" }}
           >
             <Button variant='contained' type='submit'>
-              {updateEmployee ? "Update" : "Register"}
+              {updateUpsDetails ? "Update" : "Register"}
             </Button>
-            {updateEmployee ? (
+            {updateUpsDetails ? (
               <Button variant='outlined' type='reset' onClick={cancelUpdate}>
                 Cancel
               </Button>
@@ -209,13 +371,13 @@ function RegisterUps() {
                 variant='outlined'
                 type='reset'
                 onClick={() =>
-                  resetForm({ values: { ...registerEmployeeInitialValue } })
+                  resetForm({ values: { ...registerUpsInitialValue } })
                 }
               >
                 Reset
               </Button>
             )}
-          </CardActions> */}
+          </CardActions>
         </Card>
       </form>
     </>

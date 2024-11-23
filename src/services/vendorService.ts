@@ -31,10 +31,15 @@ export async function getAllVendors(
   payload: IVendorListQueryString
 ): Promise<IVendorResponse[]> {
   const baseInitialization = createBaseInitialization("GET");
-  const { take, cursor } = payload;
-  const result = await fetch(`${url}?take=${take}&cursor=${cursor}`, {
+  let apiUrl = `${url}`;
+  if (payload) {
+    const { take, cursor } = payload;
+    apiUrl = `${url}?take=${take}&cursor=${cursor}`;
+  }
+  const result = await fetch(apiUrl, {
     ...baseInitialization,
   });
+
   const response = await result.json();
 
   return response;

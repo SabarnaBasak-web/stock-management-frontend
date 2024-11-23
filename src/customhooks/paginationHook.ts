@@ -3,10 +3,11 @@ import { useState } from "react";
 import { IIpDetails } from "../redux/ip/ipSlice";
 import { IEmployeeDetails } from "../redux/employee/employeeSlice";
 import { IVendorResponse } from "../redux/vendor/vendorSlice";
+import { IUpsResponse } from "../redux/ups/upsSlice";
 
 interface IPaginationProp {
   paginationModel: GridPaginationModel;
-  data: IIpDetails[] | IEmployeeDetails[] | IVendorResponse[];
+  data: IIpDetails[] | IEmployeeDetails[] | IVendorResponse[] | IUpsResponse[];
 }
 const usePagination = (props: IPaginationProp) => {
   const { paginationModel, data } = props;

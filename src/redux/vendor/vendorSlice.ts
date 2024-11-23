@@ -15,8 +15,8 @@ export interface IVendorsListResponse {
   total: number;
 }
 export interface IVendorListQueryString {
-  take: number;
-  cursor: number;
+  take?: number;
+  cursor?: number;
 }
 export interface IVendorState {
   vendorsList: IVendorResponse[];
@@ -28,8 +28,9 @@ const initialState: IVendorState = {
   totalCount: 0,
 };
 export const addNewVendor = createAction<IVendor>("addNewVendor");
-export const getVendorsList =
-  createAction<IVendorListQueryString>("getVendorsList");
+export const getVendorsList = createAction<IVendorListQueryString | undefined>(
+  "getVendorsList"
+);
 export const updateVendorDetails =
   createAction<IVendorResponse>("updateVendor");
 export const vendorSlice = createSlice({

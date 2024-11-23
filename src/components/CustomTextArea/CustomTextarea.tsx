@@ -63,15 +63,19 @@ interface ICustomTextAreaProps {
   minRows: number;
   name: string;
   placeholderText: string;
+  value: string;
+  onChange: (param: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 function CustomTextarea(props: ICustomTextAreaProps) {
-  const { ariaLabel, minRows, name, placeholderText } = props;
+  const { ariaLabel, minRows, name, placeholderText, onChange, value } = props;
   return (
     <Textarea
       placeholder={placeholderText}
       minRows={minRows}
       aria-labelled={ariaLabel}
       name={name}
+      value={value}
+      onChange={(e) => onChange(e)}
     />
   );
 }
