@@ -163,6 +163,7 @@ function RegisterUps(props: IRegisterProps) {
     handleSubmit,
     resetForm,
     setFieldValue,
+    touched,
   } = formik;
 
   const handleSelectVendorChange = (event: SelectChangeEvent) => {
@@ -190,7 +191,9 @@ function RegisterUps(props: IRegisterProps) {
               onChange={handleChange}
               value={values.gemNo}
             />
-            {errors.gemNo ? <ErrorText text={errors.gemNo ?? ""} /> : null}
+            {errors.gemNo && touched.gemNo ? (
+              <ErrorText text={errors.gemNo ?? ""} />
+            ) : null}
             {/* Gem Date */}
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
@@ -210,7 +213,7 @@ function RegisterUps(props: IRegisterProps) {
               onChange={handleChange}
               value={values.brandName}
             />
-            {errors.brandName ? (
+            {errors.brandName && touched.brandName ? (
               <ErrorText text={errors.brandName ?? ""} />
             ) : null}
             {/* Serial Number */}
@@ -223,7 +226,7 @@ function RegisterUps(props: IRegisterProps) {
               onChange={handleChange}
               value={values.serialNo}
             />
-            {errors.serialNo ? (
+            {errors.serialNo && touched.serialNo ? (
               <ErrorText text={errors.serialNo ?? ""} />
             ) : null}
             {/* Model Number */}
@@ -235,7 +238,9 @@ function RegisterUps(props: IRegisterProps) {
               onChange={handleChange}
               value={values.modelNo}
             />
-            {errors.modelNo ? <ErrorText text={errors.modelNo ?? ""} /> : null}
+            {errors.modelNo && touched.modelNo ? (
+              <ErrorText text={errors.modelNo ?? ""} />
+            ) : null}
             {/* Vendor */}
             {vendorsList.length && (
               <FormControl required>
@@ -259,7 +264,7 @@ function RegisterUps(props: IRegisterProps) {
                 </Select>
               </FormControl>
             )}
-            {errors.vendorId ? (
+            {errors.vendorId && touched.vendorId ? (
               <ErrorText text={errors.vendorId ?? ""} />
             ) : null}
             {/* Problem */}
@@ -296,7 +301,7 @@ function RegisterUps(props: IRegisterProps) {
                   onChange={(e) => setFieldValue("problem", e.target.value)}
                   placeholderText='State the problem...'
                 />
-                {errors.problem ? (
+                {errors.problem && touched.problem ? (
                   <ErrorText text={errors.problem ?? ""} />
                 ) : null}
               </>
@@ -337,7 +342,7 @@ function RegisterUps(props: IRegisterProps) {
                     }
                   />
                 </LocalizationProvider>
-                {errors.warrentyStartDate ? (
+                {errors.warrentyStartDate && touched.warrentyStartDate ? (
                   <ErrorText text={errors.warrentyStartDate ?? ""} />
                 ) : null}
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -350,7 +355,7 @@ function RegisterUps(props: IRegisterProps) {
                     }
                   />
                 </LocalizationProvider>
-                {errors.warrentyEndDate ? (
+                {errors.warrentyEndDate && touched.warrentyEndDate ? (
                   <ErrorText text={errors.warrentyEndDate ?? ""} />
                 ) : null}
               </>
