@@ -14,6 +14,7 @@ interface IUpsTableProps {
 
 export default function VendorTable(props: IUpsTableProps) {
   const { editUpsHandler } = props;
+
   const columns: GridColDef<IUpsResponse>[] = [
     {
       field: "id",
@@ -65,7 +66,7 @@ export default function VendorTable(props: IUpsTableProps) {
       disableColumnMenu: true,
       resizable: true,
       renderCell(params) {
-        return params.row.problem ? "true" : "-";
+        return params.row.problem ? params.row.problem : "-";
       },
     },
     {
@@ -105,13 +106,16 @@ export default function VendorTable(props: IUpsTableProps) {
       type: "actions",
       headerName: "Send to E-Waste",
       resizable: true,
-      getActions: () => [
-        <GridActionsCellItem
-          icon={<SendIcon />}
-          label='Edit Ups'
-          onClick={() => {}}
-        />,
-      ],
+      getActions: (params) =>
+        params.row.defunct
+          ? [
+              <GridActionsCellItem
+                icon={<SendIcon />}
+                label='Edit Ups'
+                onClick={() => {}}
+              />,
+            ]
+          : [],
     },
     {
       field: "isAmc",
@@ -124,13 +128,16 @@ export default function VendorTable(props: IUpsTableProps) {
       type: "actions",
       headerName: "Modify",
       resizable: true,
-      getActions: (params) => [
-        <GridActionsCellItem
-          icon={<EditIcon />}
-          label='Edit Ups'
-          onClick={() => editUpsHandler(params.row)}
-        />,
-      ],
+      getActions: (params) =>
+        !params.row.deliveryDate
+          ? [
+              <GridActionsCellItem
+                icon={<EditIcon />}
+                label='Edit Ups'
+                onClick={() => editUpsHandler(params.row)}
+              />,
+            ]
+          : [],
     },
   ];
 
@@ -153,7 +160,6 @@ export default function VendorTable(props: IUpsTableProps) {
     dispatch(getAllUpsList({ take: take, cursor: cursor }));
   }, [dispatch, cursor, take]);
 
-  console.log("@@ Upsdetails", upsDetails);
   return (
     <div style={{ maxHeight: "400px", height: "auto" }}>
       <DataGrid
