@@ -92,7 +92,6 @@ function RegisterUps(props: IRegisterProps) {
   };
 
   const selectedUpsDetails = (updateUpsDetails: IUpsResponse) => {
-    console.log("@@ SelectedUps", updateUpsDetails);
     return {
       gemNo: updateUpsDetails.gemNo.toString(),
       brandName: updateUpsDetails.brandName,
@@ -275,7 +274,10 @@ function RegisterUps(props: IRegisterProps) {
               name='problemSelected'
               value={values.problemSelected}
               onChange={(event) =>
-                setFieldValue("problemSelected", event?.target.value)
+                setFieldValue(
+                  "problemSelected",
+                  event?.target.value === "true" ? true : false
+                )
               }
             >
               <FormControlLabel
@@ -304,8 +306,42 @@ function RegisterUps(props: IRegisterProps) {
                 {errors.problem && touched.problem ? (
                   <ErrorText text={errors.problem ?? ""} />
                 ) : null}
+
+                {/* display defunct only in edit mode */}
+                {/* Defunct */}
+                {updateUpsDetails && (
+                  <>
+                    <FormLabel>Defunct</FormLabel>
+                    <RadioGroup
+                      row
+                      aria-labelledby='demo-form-control-label-placement'
+                      name='defunct'
+                      value={values.defunct}
+                      onChange={(e) =>
+                        setFieldValue(
+                          "defunct",
+                          e.target.value === "true" ? true : false
+                        )
+                      }
+                    >
+                      <FormControlLabel
+                        value={false}
+                        control={<Radio />}
+                        label='No'
+                        labelPlacement='start'
+                      />
+                      <FormControlLabel
+                        value={true}
+                        control={<Radio />}
+                        label='Yes'
+                        labelPlacement='start'
+                      />
+                    </RadioGroup>
+                  </>
+                )}
               </>
             )}
+
             {/* Warrenty Selected */}
             <FormLabel>Warrenty</FormLabel>
             <RadioGroup
@@ -314,7 +350,10 @@ function RegisterUps(props: IRegisterProps) {
               name='warrentySelected'
               value={values.warrentySelected}
               onChange={(e) =>
-                setFieldValue("warrentySelected", e.target.value)
+                setFieldValue(
+                  "warrentySelected",
+                  e.target.value === "true" ? true : false
+                )
               }
             >
               <FormControlLabel
