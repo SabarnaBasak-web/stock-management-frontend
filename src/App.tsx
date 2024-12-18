@@ -9,6 +9,7 @@ import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import RouteScreen from "./screen/Routing/Route";
+import Notification from "./components/Snackbar/Snackbar";
 
 function App() {
   const customTheme = createTheme({
@@ -27,6 +28,7 @@ function App() {
         <BrowserRouter>
           <CssBaseline />
           <RouteScreen />
+          <Notification />
         </BrowserRouter>
       </Provider>
     </ThemeProvider>

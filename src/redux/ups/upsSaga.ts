@@ -19,6 +19,7 @@ import {
   getAllUps,
   updateUpsService,
 } from "../../services/upsService";
+import { setSnackbarMessage } from "../snackbar/snackbarSlice";
 
 function* registerNewUps(action: PayloadAction<IUpsRequestPayload>) {
   const response: IUpsDetails = yield call(addNewUps, action.payload);
@@ -37,8 +38,6 @@ function* getAllUpsSaga(action: PayloadAction<IUpsListQueryString>) {
   const res: { data: IUpsResponse[]; total: number } = yield call(getAllUps, {
     ...payload,
   });
-
-  console.log("@@ response", res);
   yield put(setAllUps(res.data));
   yield put(setRowCount(res.total));
 }
@@ -51,6 +50,21 @@ function* updateUpsDetailsSaga(
 
   if (response.id) {
     yield put(updateUps(response));
+    yield put(
+      setSnackbarMessage({
+        title: "Success",
+        message: `updated the ups details for the the id-${response.id}`,
+        type: "success",
+      })
+    );
+  } else {
+    yield put(
+      setSnackbarMessage({
+        title: "Error",
+        message: "Something went wrong",
+        type: "error",
+      })
+    );
   }
 }
 

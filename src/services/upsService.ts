@@ -40,11 +40,15 @@ export async function updateUpsService(
 ): Promise<IUpsResponse> {
   const baseInitialization = createBaseInitialization("PUT");
   const { id } = payload;
-  const result = await fetch(`${url}/${id}`, {
-    ...baseInitialization,
-    body: JSON.stringify(payload),
-  });
-  const response = await result.json();
+  try {
+    const result = await fetch(`${url}/${id}`, {
+      ...baseInitialization,
+      body: JSON.stringify(payload),
+    });
+    const response = await result.json();
 
-  return response;
+    return response;
+  } catch (error) {
+    throw new Error("Some error occurred while updating the ups details");
+  }
 }
