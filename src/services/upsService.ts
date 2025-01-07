@@ -27,9 +27,16 @@ export async function getAllUps(
 ): Promise<{ data: IUpsResponse[]; total: number }> {
   const baseInitialization = createBaseInitialization("GET");
   const { take, cursor } = payload;
-  const result = await fetch(`${url}?take=${take}&cursor=${cursor}`, {
-    ...baseInitialization,
-  });
+  let result;
+  if (take && cursor) {
+    result = await fetch(`${url}?take=${take}&cursor=${cursor}`, {
+      ...baseInitialization,
+    });
+  } else {
+    result = await fetch(url, {
+      ...baseInitialization,
+    });
+  }
   const response = await result.json();
 
   return response;

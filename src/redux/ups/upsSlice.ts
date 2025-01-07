@@ -2,8 +2,8 @@ import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IVendorResponse } from "../vendor/vendorSlice";
 
 export interface IUpsListQueryString {
-  take: number;
-  cursor: number;
+  take?: number;
+  cursor?: number;
 }
 
 export interface IUpsRequestPayload {
@@ -58,7 +58,9 @@ const initialState: IUpsInitialState = {
 };
 
 export const registerUps = createAction<IUpsRequestPayload>("registerUps");
-export const getAllUpsList = createAction<IUpsListQueryString>("getAllUps");
+export const getAllUpsList = createAction<IUpsListQueryString | undefined>(
+  "getAllUps"
+);
 export const updateUpsDetailsAction =
   createAction<IUpsRequestPayload>("updateUps");
 
@@ -73,7 +75,6 @@ export const upsSlice = createSlice({
       state.editUps = action.payload;
     },
     setAllUps: (state, action: PayloadAction<IUpsResponse[]>) => {
-      console.log("@@ SetAllUps", action);
       state.upsDetails = action.payload;
     },
     setRowCount: (state, action: PayloadAction<number>) => {

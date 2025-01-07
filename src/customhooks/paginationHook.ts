@@ -4,10 +4,16 @@ import { IIpDetails } from "../redux/ip/ipSlice";
 import { IEmployeeDetails } from "../redux/employee/employeeSlice";
 import { IVendorResponse } from "../redux/vendor/vendorSlice";
 import { IUpsResponse } from "../redux/ups/upsSlice";
+import { IAssignProductData } from "../redux/assignProduct/assignProductSlice";
 
 interface IPaginationProp {
   paginationModel: GridPaginationModel;
-  data: IIpDetails[] | IEmployeeDetails[] | IVendorResponse[] | IUpsResponse[];
+  data:
+    | IIpDetails[]
+    | IEmployeeDetails[]
+    | IVendorResponse[]
+    | IUpsResponse[]
+    | IAssignProductData[];
 }
 const usePagination = (props: IPaginationProp) => {
   const { paginationModel, data } = props;

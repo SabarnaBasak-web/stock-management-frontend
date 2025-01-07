@@ -10,7 +10,6 @@ function VendorScreen() {
   );
 
   const editVendorHandler = (vendor: IVendorResponse) => {
-    console.log("@@ vendor", vendor);
     setUpdateVendor(vendor);
   };
 
