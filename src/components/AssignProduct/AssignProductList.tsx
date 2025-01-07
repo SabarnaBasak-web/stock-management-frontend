@@ -91,7 +91,7 @@ export const AssignProductList = () => {
   }, [dispatch, cursor, take]);
 
   const returnProductHandler = (row: IAssignProductData) => {
-    console.log("@@ row", row);
+    //  Todo: Implement return product handler
   };
   return (
     <div style={{ maxHeight: "400px", height: "auto" }}>

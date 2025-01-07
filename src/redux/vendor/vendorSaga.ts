@@ -34,7 +34,6 @@ function* registerVendor(action: PayloadAction<IVendor>) {
   }
 }
 function* fetchAllVendors(action: PayloadAction<IVendorListQueryString>) {
-  console.log("@@ fetch all vendors");
   const response: IVendorsListResponse = yield call(
     getAllVendors,
     action.payload

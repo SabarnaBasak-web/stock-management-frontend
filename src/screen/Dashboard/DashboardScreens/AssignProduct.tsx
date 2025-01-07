@@ -41,11 +41,7 @@ function AssignProduct() {
     (state: RootState) => state.product.productsList
   );
   const allUps = useSelector((state: RootState) => state.ups.upsDetails);
-  const assignedProps = useSelector(
-    (state: RootState) => state.assignProduct.data
-  );
 
-  console.log("@@ assignedProps", assignedProps);
   const [searchEmployee, setSearchEmployee] = useState("");
   const [empDetails, setEmpDetails] = useState<IEmployeeDetails>();
   const [assignedProducts, setAssignedProducts] = useState<

@@ -75,7 +75,6 @@ export const upsSlice = createSlice({
       state.editUps = action.payload;
     },
     setAllUps: (state, action: PayloadAction<IUpsResponse[]>) => {
-      console.log("@@ SetAllUps", action);
       state.upsDetails = action.payload;
     },
     setRowCount: (state, action: PayloadAction<number>) => {

@@ -25,7 +25,7 @@ export async function getAssignedProductToEmpService(payload: string) {
   });
 
   const response = await result.json();
-  console.log("@@ response", response);
+
   return response;
 }
 
