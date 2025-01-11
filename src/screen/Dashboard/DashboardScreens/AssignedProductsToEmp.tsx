@@ -30,7 +30,9 @@ function AssignedProductToEmployee(props: IAssignedProductToEmployeeProps) {
 
   return (
     <Grid container p={2}>
-      <Typography variant='h6'>Products In Use</Typography>
+      {productsList && productsList.length > 0 && (
+        <Typography variant='h6'>Products In Use</Typography>
+      )}
       <Divider />
       {productsList && productsList.length ? (
         productsList.map((item) => {
