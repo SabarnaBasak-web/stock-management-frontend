@@ -102,7 +102,7 @@ function AssignProduct() {
       <Grid container p={2} spacing={2}>
         {/* Left Container */}
         <Grid item md={6}>
-          <Typography variant='body1'>Assign Ip to User</Typography>
+          <Typography variant='h6'>Assign Ip to User</Typography>
           <Grid
             container
             sx={{ marginTop: "15px" }}
