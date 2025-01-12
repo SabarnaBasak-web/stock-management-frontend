@@ -12,6 +12,7 @@ import { getLoggedInUserDetails } from "../../redux/employee/employeeSlice";
 import { decodeToken, isTokenExpired } from "../../helper/helper";
 import { RootState } from "../../redux/store";
 
+const MonitorScreen = lazy(() => import("./DashboardScreens/Monitor"));
 const HomeScreen = lazy(() => import("./DashboardScreens/Home"));
 const CpuScreen = lazy(() => import("./DashboardScreens/Cpu"));
 const EmployeeScreen = lazy(() => import("./DashboardScreens/Employee"));
@@ -52,6 +53,10 @@ function DashboardScreen() {
     "/vendor": {
       title: "Vendors",
       component: <VendorScreen />,
+    },
+    "/monitor": {
+      title: "Monitor",
+      component: <MonitorScreen />,
     },
   };
 
