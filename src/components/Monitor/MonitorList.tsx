@@ -1,21 +1,22 @@
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
-import EditIcon from "@mui/icons-material/Edit";
+import {
+  getAllMonitorsList,
+  IMonitorResponse,
+} from "../../redux/monitor/monitorSlice";
 import SendIcon from "@mui/icons-material/Send";
-import { useDispatch } from "react-redux";
+import EditIcon from "@mui/icons-material/Edit";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import usePagination from "../../customhooks/paginationHook";
-import { getAllUpsList, IUpsResponse } from "../../redux/ups/upsSlice";
 
-interface IUpsTableProps {
-  editUpsHandler: (param: IUpsResponse) => void;
+interface IMonitorTableProps {
+  editMonitorHandler: (params: IMonitorResponse) => void;
 }
+export default function MonitorListTable(props: IMonitorTableProps) {
+  const { editMonitorHandler } = props;
 
-export default function UpsTable(props: IUpsTableProps) {
-  const { editUpsHandler } = props;
-
-  const columns: GridColDef<IUpsResponse>[] = [
+  const columns: GridColDef<IMonitorResponse>[] = [
     {
       field: "id",
       headerName: "Id",
@@ -55,6 +56,13 @@ export default function UpsTable(props: IUpsTableProps) {
     {
       field: "modelNo",
       headerName: "Model Number",
+      hideSortIcons: true,
+      disableColumnMenu: true,
+      resizable: true,
+    },
+    {
+      field: "displaySize",
+      headerName: "Display Size",
       hideSortIcons: true,
       disableColumnMenu: true,
       resizable: true,
@@ -134,7 +142,7 @@ export default function UpsTable(props: IUpsTableProps) {
               <GridActionsCellItem
                 icon={<EditIcon />}
                 label='Edit Ups'
-                onClick={() => editUpsHandler(params.row)}
+                onClick={() => editMonitorHandler(params.row)}
               />,
             ]
           : [],
@@ -147,24 +155,25 @@ export default function UpsTable(props: IUpsTableProps) {
     page: 0,
   });
 
-  const { upsDetails, totalCount } = useSelector(
-    (state: RootState) => state.ups
+  const { monitorDetails, totalCount } = useSelector(
+    (state: RootState) => state.monitor
   );
 
   const { cursor, handlePaginationModelChange, take } = usePagination({
     paginationModel: paginationModel,
-    data: upsDetails,
+    data: monitorDetails,
   });
 
   useEffect(() => {
-    dispatch(getAllUpsList({ take: take, cursor: cursor }));
+    dispatch(getAllMonitorsList({ take: take, cursor: cursor }));
   }, [dispatch, cursor, take]);
 
+  console.log("@@ monitor details", monitorDetails);
   return (
     <div style={{ maxHeight: "400px", height: "auto" }}>
       <DataGrid
         autoHeight
-        rows={upsDetails}
+        rows={monitorDetails}
         rowCount={totalCount}
         columns={columns}
         paginationModel={paginationModel}

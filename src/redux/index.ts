@@ -16,6 +16,8 @@ import UpsSaga from "./ups/upsSaga";
 import { snackbarSlice } from "./snackbar/snackbarSlice";
 import { assignProductSlice } from "./assignProduct/assignProductSlice";
 import assignProductSaga from "./assignProduct/assignProductSaga";
+import { monitorSlice } from "./monitor/monitorSlice";
+import monitorSaga from "./monitor/monitorSaga";
 
 export function* rootSaga() {
   yield all([
@@ -26,6 +28,7 @@ export function* rootSaga() {
     fork(vendorSaga),
     fork(UpsSaga),
     fork(assignProductSaga),
+    fork(monitorSaga),
   ]);
 }
 export const rootReducer = combineSlices(
@@ -36,5 +39,6 @@ export const rootReducer = combineSlices(
   vendorSlice,
   upsSlice,
   snackbarSlice,
-  assignProductSlice
+  assignProductSlice,
+  monitorSlice
 );
